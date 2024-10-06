@@ -6,6 +6,7 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 const authMiddleware = require('../middleware/authMiddleware');
 const Usuario = require('../models/Usuario'); // Importar el modelo de usuario
+const Archivo=require('../models/Archivo')
 /**
  * @swagger
  * /auth/registro:
@@ -130,6 +131,51 @@ router.get('/me', authMiddleware, async (req, res) => {
     } catch (error) {
       console.error(error);
       res.status(500).json({ mensaje: 'Error al obtener los datos del usuario' });
+    }
+  });
+  /**
+ * @swagger
+ * /auth/imagen/{usuarioId}:
+ *   get:
+ *     summary: Obtener la imagen de perfil de un usuario
+ *     parameters:
+ *       - in: path
+ *         name: usuarioId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del usuario
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Imagen de perfil del usuario
+ *       401:
+ *         description: Acceso denegado
+ *       404:
+ *         description: Usuario o imagen no encontrada
+ */
+router.get('/imagen/:usuarioId', authMiddleware, async (req, res) => {
+    try {
+      const usuario = await Usuario.findById(req.params.usuarioId);
+      if (!usuario) {
+        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      }
+      if (!usuario.foto_de_colaborador) {
+        return res.status(404).json({ mensaje: 'Imagen no encontrada' });
+      }
+  
+      const archivo = await Archivo.findById(usuario.foto_de_colaborador);
+      if (!archivo) {
+        return res.status(404).json({ mensaje: 'Archivo no encontrado' });
+      }
+  
+      res.set('Content-Type', archivo.contentType);
+      res.send(archivo.data);
+  
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ mensaje: 'Error al obtener la imagen del usuario' });
     }
   });
 module.exports = router;
