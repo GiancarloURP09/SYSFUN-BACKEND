@@ -4,6 +4,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Grid = require('gridfs-stream');
 const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
 
 // Conexión a GridFS
 let gfs;
@@ -16,12 +17,31 @@ conn.once('open', () => {
 // Registro de usuario
 exports.registrarUsuario = async (req, res) => {
   try {
+    // Acceder a los campos del formulario
     const { nombres, apellidos, correo, nombre_usuario, contrasena, fecha_de_nacimiento, rol } = req.body;
+
+    // Validar los datos del formulario
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errores: errors.array() });
+    }
+
     const salt = await bcryptjs.genSalt(10);
     const contrasenaEncriptada = await bcryptjs.hash(contrasena, salt);
 
-    // Guardar la imagen en GridFS
-    let archivoId = null;
+    const nuevoUsuario = new Usuario({
+      nombres,
+      apellidos,
+      correo,
+      nombre_usuario,
+      contrasena: contrasenaEncriptada,
+      fecha_de_nacimiento,
+      rol,
+    });
+
+    await nuevoUsuario.save(); // Guardar el usuario primero
+
+    // Guardar la imagen en GridFS después de guardar el usuario
     if (req.file) {
       const nuevoArchivo = new Archivo({
         filename: req.file.originalname,
@@ -33,20 +53,10 @@ exports.registrarUsuario = async (req, res) => {
         data: req.file.buffer,
       });
       await nuevoArchivo.save();
-      archivoId = nuevoArchivo._id;
+      nuevoUsuario.foto_de_colaborador = nuevoArchivo._id;
+      await nuevoUsuario.save(); // Actualizar el usuario con el ID del archivo
     }
 
-    const nuevoUsuario = new Usuario({
-      nombres,
-      apellidos,
-      correo,
-      nombre_usuario,
-      contrasena: contrasenaEncriptada,
-      fecha_de_nacimiento,
-      foto_de_colaborador: archivoId,
-      rol,
-    });
-    await nuevoUsuario.save();
     res.status(201).json({ mensaje: 'Usuario registrado correctamente' });
   } catch (error) {
     console.error(error);
@@ -57,8 +67,8 @@ exports.registrarUsuario = async (req, res) => {
 // Inicio de sesión
 exports.iniciarSesion = async (req, res) => {
   try {
-    const { email, contrasena } = req.body;
-    const usuario = await Usuario.findOne({ email });
+    const { correo, contrasena } = req.body;
+    const usuario = await Usuario.findOne({ correo });
     if (!usuario) {
       return res.status(400).json({ mensaje: 'Credenciales inválidas' });
     }
