@@ -16,7 +16,7 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'API de Gestión de Ventas',
+      title: 'SYSFUN-BACKEND APP',
       version: '1.0.0',
     },
   },
