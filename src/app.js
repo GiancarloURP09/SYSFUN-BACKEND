@@ -3,14 +3,17 @@ const conectarDB = require('./config/database');
 const authRoutes = require('./routes/auth');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-
+const cors = require('cors'); // Importar cors
 require('dotenv').config();
 
 const app = express();
 conectarDB();
 
 app.use(express.json());
-
+app.use(cors({
+    origin: 'http://localhost:9000', // Permitir solo solicitudes desde este origen
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Permitir solo estos métodos HTTP
+  }));
 // Configuración de Swagger
 const swaggerOptions = {
   definition: {
