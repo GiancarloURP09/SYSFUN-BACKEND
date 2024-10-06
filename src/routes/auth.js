@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() }); // Almacenar la imagen en memoria
 /**
  * @swagger
  * /auth/registro:
@@ -10,16 +11,26 @@ const authController = require('../controllers/authController');
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
+ *               nombres:
  *                 type: string
- *               email:
+ *               apellidos:
+ *                 type: string
+ *               correo:
+ *                 type: string
+ *               nombre_usuario:
  *                 type: string
  *               contrasena:
  *                 type: string
+ *               fecha_de_nacimiento:
+ *                 type: string
+ *                 format: date
+ *               foto_de_colaborador:
+ *                 type: string
+ *                 format: binary
  *               rol:
  *                 type: string
  *                 enum: [admin, marketing, ventas, desarrollo]
@@ -29,7 +40,7 @@ const authController = require('../controllers/authController');
  *       500:
  *         description: Error al registrar usuario
  */
-router.post('/registro', authController.registrarUsuario);
+router.post('/registro', upload.single('foto_de_colaborador'), authController.registrarUsuario);
 
 /**
  * @swagger

@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 
 const usuarioSchema = new mongoose.Schema({
-  nombre: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  nombres: { type: String, required: true },
+  apellidos: { type: String, required: true },
+  correo: { type: String, required: true, unique: true },
+  nombre_usuario: { type: String, required: true, unique: true },
   contrasena: { type: String, required: true },
-  rol: { 
-    type: String, 
-    enum: ['admin', 'marketing', 'ventas', 'desarrollo'], 
-    default: 'ventas' 
+  fecha_de_nacimiento: { type: Date },
+  foto_de_colaborador: { type: mongoose.Schema.Types.ObjectId, ref: 'Archivo' }, // Referencia a GridFS
+  rol: {
+    type: String,
+    enum: ['admin', 'marketing', 'ventas', 'desarrollo'],
+    default: 'ventas'
   },
 });
 
