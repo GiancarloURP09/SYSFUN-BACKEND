@@ -4,7 +4,8 @@ const authController = require('../controllers/authController');
 const { check, validationResult } = require('express-validator');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
-
+const authMiddleware = require('../middleware/authMiddleware');
+const Usuario = require('../models/Usuario'); // Importar el modelo de usuario
 /**
  * @swagger
  * /auth/registro:
@@ -106,5 +107,29 @@ router.post('/login',
   ],
   authController.iniciarSesion
 );
-
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Obtener los datos del usuario logueado
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Datos del usuario
+ *       401:
+ *         description: Acceso denegado
+ */
+router.get('/me', authMiddleware, async (req, res) => {
+    try {
+      const usuario = await Usuario.findById(req.usuario.id).select('-contrasena');
+      if (!usuario) {
+        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      }
+      res.json(usuario);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ mensaje: 'Error al obtener los datos del usuario' });
+    }
+  });
 module.exports = router;
