@@ -197,5 +197,121 @@ router.get('/imagen/:usuarioId', authMiddleware, async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener la imagen del usuario' });
   }
 });
+// ... otras importaciones
+
+// ... (código de las rutas /registro, /login, /me e /imagen)
+
+/**
+ * @swagger
+ * /auth/usuario/{id}:
+ *   get:
+ *     summary: Obtener los datos de un usuario por ID
+ *     tags: [Usuario]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del usuario
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Datos del usuario
+ *       401:
+ *         description: Acceso denegado
+ *       404:
+ *         description: Usuario no encontrado
+ */
+router.get('/usuario/:id', authMiddleware, authController.obtenerUsuario);
+
+/**
+ * @swagger
+ * /auth/usuario/{id}:
+ *   put:
+ *     summary: Actualizar los datos de un usuario por ID
+ *     tags: [Usuario]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del usuario
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombres:
+ *                 type: string
+ *                 description: Nombres del usuario.
+ *               apellidos:
+ *                 type: string
+ *                 description: Apellidos del usuario.
+ *               correo:
+ *                 type: string
+ *                 description: Correo electrónico del usuario.
+ *               nombre_usuario:
+ *                 type: string
+ *                 description: Nombre de usuario.
+ *               fecha_de_nacimiento:
+ *                 type: string
+ *                 format: date
+ *                 description: Fecha de nacimiento del usuario.
+ *               rol:
+ *                 type: string
+ *                 enum: [admin, marketing, ventas, desarrollo]
+ *                 description: Rol del usuario.
+ *               tipoDocumento:
+ *                 type: string
+ *                 enum: [DNI, Pasaporte, Carnet de Extranjería, Otro]
+ *                 description: Tipo de documento del usuario.
+ *               numeroDocumento:
+ *                 type: string
+ *                 description: Número de documento del usuario.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado correctamente
+ *       400:
+ *         description: Error de validación
+ *       401:
+ *         description: Acceso denegado
+ *       404:
+ *         description: Usuario no encontrado
+ */
+router.put('/usuario/:id', authMiddleware, authController.actualizarUsuario);
+
+/**
+ * @swagger
+ * /auth/usuario/{id}:
+ *   delete:
+ *     summary: Eliminar un usuario por ID
+ *     tags: [Usuario]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del usuario
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Usuario eliminado correctamente
+ *       401:
+ *         description: Acceso denegado
+ *       404:
+ *         description: Usuario no encontrado
+ */
+router.delete('/usuario/:id', authMiddleware, authController.eliminarUsuario);
+
+module.exports = router;
 
 module.exports = router;

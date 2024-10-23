@@ -65,7 +65,67 @@ exports.registrarUsuario = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al registrar usuario' });
   }
 };
+// ... otras importaciones
 
+// ... (código de las funciones registrarUsuario e iniciarSesion)
+
+// Obtener un usuario por ID
+exports.obtenerUsuario = async (req, res) => {
+  try {
+    const usuario = await Usuario.findById(req.params.id).select('-contrasena');
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+    res.json(usuario);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al obtener el usuario' });
+  }
+};
+
+// Actualizar un usuario por ID
+exports.actualizarUsuario = async (req, res) => {
+  try {
+    const { nombres, apellidos, correo, nombre_usuario, fecha_de_nacimiento, rol, tipoDocumento, numeroDocumento } = req.body;
+
+    const usuario = await Usuario.findById(req.params.id);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    // Actualizar los campos del usuario
+    usuario.nombres = nombres;
+    usuario.apellidos = apellidos;
+    usuario.correo = correo;
+    usuario.nombre_usuario = nombre_usuario;
+    usuario.fecha_de_nacimiento = fecha_de_nacimiento;
+    usuario.rol = rol;
+    usuario.tipoDocumento = tipoDocumento;
+    usuario.numeroDocumento = numeroDocumento;
+
+    await usuario.save();
+    res.json({ mensaje: 'Usuario actualizado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al actualizar el usuario' });
+  }
+};
+
+// Eliminar un usuario por ID
+exports.eliminarUsuario = async (req, res) => {
+  try {
+    const usuario = await Usuario.findById(req.params.id);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    await usuario.remove();
+    res.json({ mensaje: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al eliminar el usuario' });
+  }
+};
 // Inicio de sesión
 exports.iniciarSesion = async (req, res) => {
   try {
