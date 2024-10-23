@@ -22,6 +22,18 @@ const swaggerOptions = {
       title: 'SYSFUN-BACKEND APP',
       version: '1.0.0',
     },
+    components: { // Agregar la definición de seguridad
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        }
+      }
+    },
+    security: [{ // Aplicar la seguridad a toda la API
+      bearerAuth: []
+    }]
   },
   apis: ['./src/routes/*.js'], // Rutas donde se encuentran las definiciones de Swagger
 };

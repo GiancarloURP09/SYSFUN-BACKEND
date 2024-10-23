@@ -79,6 +79,7 @@ exports.iniciarSesion = async (req, res) => {
       return res.status(400).json({ mensaje: 'Credenciales inválidas' });
     }
     const token = jwt.sign({ id: usuario._id }, process.env.JWT_SECRET);
+    console.log(token)
     res.json({ token });
   } catch (error) {
     console.error(error);
