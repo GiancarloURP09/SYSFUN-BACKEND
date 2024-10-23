@@ -95,7 +95,7 @@ exports.actualizarRol = async (req, res) => {
 // Eliminar un rol por ID
 exports.eliminarRol = async (req, res) => {
   try {
-    const rol = await Rol.findByIdAndRemove(req.params.id);
+    const rol = await Rol.findByIdAndDelete(req.params.id);
     if (!rol) {
       return res.status(404).json({ mensaje: 'Rol no encontrado' });
     }
