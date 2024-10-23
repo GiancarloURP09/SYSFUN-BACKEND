@@ -281,7 +281,30 @@ router.get('/usuario/:id', authMiddleware, authController.obtenerUsuario);
  *         description: Usuario no encontrado
  */
 router.put('/usuario/:id', authMiddleware, authController.actualizarUsuario);
+/**
+ * @swagger
+ * /auth/usuarios:
+ *   get:
+ *     summary: Obtener todos los usuarios
+ *     tags: [Usuario]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuarios
+ *         content:
+ *           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/Usuario'  
 
+ *       401:
+ *         description: Acceso denegado
+ *       500:
+ *         description: Error del servidor
+ */
+router.get('/usuarios', authMiddleware, authController.obtenerUsuarios);
 /**
  * @swagger
  * /auth/usuario/{id}:
@@ -306,7 +329,5 @@ router.put('/usuario/:id', authMiddleware, authController.actualizarUsuario);
  *         description: Usuario no encontrado
  */
 router.delete('/usuario/:id', authMiddleware, authController.eliminarUsuario);
-
-module.exports = router;
 
 module.exports = router;

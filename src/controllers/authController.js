@@ -146,3 +146,13 @@ exports.iniciarSesion = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
 };
+// Obtener todos los usuarios
+exports.obtenerUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuario.find().populate('rol', 'nombre descripcion');
+    res.json(usuarios);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al obtener los usuarios', error: error.message });
+  }
+};

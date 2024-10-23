@@ -33,7 +33,53 @@ const swaggerOptions = {
           bearerFormat: 'JWT',
         }
       },
-      schemas: { 
+      schemas: {
+        Usuario: {
+          type: 'object',
+          properties: {
+            nombres: {
+              type: 'string',
+              description: 'Nombres del usuario'
+            },
+            apellidos: {
+              type: 'string',
+              description: 'Apellidos del usuario'
+            },
+            correo: {
+              type: 'string',
+              description: 'Correo electrónico del usuario'
+            },
+            nombre_usuario: {
+              type: 'string',
+              description: 'Nombre de usuario'
+            },
+            contrasena: {
+              type: 'string',
+              description: 'Contraseña del usuario'
+            },
+            fecha_de_nacimiento: {
+              type: 'string',
+              format: 'date',
+              description: 'Fecha de nacimiento del usuario'
+            },
+            foto_de_colaborador: {
+              type: 'string',
+              description: 'ID del archivo de la foto del usuario'
+            },
+            rol: {
+              type: 'string',
+              description: 'ID del rol del usuario'
+            },
+            tipoDocumento: {
+              type: 'string',
+              description: 'Tipo de documento del usuario'
+            },
+            numeroDocumento: {
+              type: 'string',
+              description: 'Número de documento del usuario'
+            }
+          }
+        }, 
         Area: {
           type: 'object',
           properties: {
