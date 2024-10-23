@@ -7,12 +7,22 @@ const usuarioSchema = new mongoose.Schema({
   nombre_usuario: { type: String, required: true, unique: true },
   contrasena: { type: String, required: true },
   fecha_de_nacimiento: { type: Date },
-  foto_de_colaborador: { type: mongoose.Schema.Types.ObjectId, ref: 'Archivo' }, // Referencia a GridFS
-  rol: {
-    type: String,
-    enum: ['admin', 'marketing', 'ventas', 'desarrollo'],
-    default: 'ventas'
+  foto_de_colaborador: { type: mongoose.Schema.Types.ObjectId, ref: 'Archivo' },
+  rol: { 
+    type: String, 
+    enum: ['admin', 'marketing', 'ventas', 'desarrollo'], 
+    default: 'ventas' 
   },
+  tipoDocumento: {
+    type: String,
+    enum: ['DNI', 'Pasaporte', 'Carnet de Extranjería', 'Otro'],
+    required: true
+  },
+  numeroDocumento: {
+    type: String,
+    required: true,
+    unique: true
+  }
 });
 
 module.exports = mongoose.model('Usuario', usuarioSchema);

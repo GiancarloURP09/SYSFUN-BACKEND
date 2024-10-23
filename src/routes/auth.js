@@ -46,6 +46,13 @@ const Archivo=require('../models/Archivo')
  *                 type: string
  *                 enum: [admin, marketing, ventas, desarrollo]
  *                 description: Rol del usuario.
+ *               tipoDocumento:
+ *                 type: string
+ *                 enum: [DNI, Pasaporte, Carnet de Extranjería, Otro]
+ *                 description: Tipo de documento del usuario.
+ *               numeroDocumento:
+ *                 type: string
+ *                 description: Número de documento del usuario. Debe ser único.
  *     responses:
  *       201:
  *         description: Usuario registrado correctamente
@@ -64,6 +71,8 @@ router.post('/registro',
     check('contrasena', 'La contraseña debe tener al menos 6 caracteres').isLength({ min: 6 }),
     check('fecha_de_nacimiento').optional().isDate(),
     check('rol', 'El rol debe ser uno de los siguientes: admin, marketing, ventas, desarrollo').isIn(['admin', 'marketing', 'ventas', 'desarrollo']),
+    check('tipoDocumento', 'El tipo de documento es obligatorio').notEmpty(),
+    check('numeroDocumento', 'El número de documento es obligatorio').notEmpty(),  
   ],
   authController.registrarUsuario
 );

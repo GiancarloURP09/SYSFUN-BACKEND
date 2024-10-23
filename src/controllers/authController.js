@@ -18,7 +18,7 @@ conn.once('open', () => {
 exports.registrarUsuario = async (req, res) => {
   try {
     // Acceder a los campos del formulario
-    const { nombres, apellidos, correo, nombre_usuario, contrasena, fecha_de_nacimiento, rol } = req.body;
+    const { nombres, apellidos, correo, nombre_usuario, contrasena, fecha_de_nacimiento, rol, tipoDocumento, numeroDocumento } = req.body;
 
     // Validar los datos del formulario
     const errors = validationResult(req);
@@ -37,6 +37,8 @@ exports.registrarUsuario = async (req, res) => {
       contrasena: contrasenaEncriptada,
       fecha_de_nacimiento,
       rol,
+      tipoDocumento,
+      numeroDocumento,
     });
 
     await nuevoUsuario.save(); // Guardar el usuario primero
