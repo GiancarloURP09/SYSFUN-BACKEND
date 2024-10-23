@@ -36,7 +36,7 @@ exports.registrarUsuario = async (req, res) => {
       nombre_usuario,
       contrasena: contrasenaEncriptada,
       fecha_de_nacimiento,
-      rol,
+      rol: req.body.rol, 
       tipoDocumento,
       numeroDocumento,
     });
