@@ -26,6 +26,9 @@ exports.crearRol = async (req, res) => {
     });
 
     await nuevoRol.save();
+    // Populate permite acceder a los datos de un documento de otra coleccion
+    await nuevoRol.populate('area', 'nombre descripcion');
+
     res.status(201).json({ mensaje: 'Rol creado correctamente', rol: nuevoRol });
   } catch (error) {
     console.error(error);
