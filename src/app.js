@@ -22,7 +22,7 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'SYSFUN-BACKEND APP',
+      title: 'SYSFUN-BACKEND APP TESIS URP',
       version: '1.0.0',
     },
     components: { 
