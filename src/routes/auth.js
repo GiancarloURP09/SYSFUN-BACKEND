@@ -330,4 +330,67 @@ router.get('/usuarios', authMiddleware, authController.obtenerUsuarios);
  */
 router.delete('/usuario/:id', authMiddleware, authController.eliminarUsuario);
 
+
+/**
+ * @swagger
+ * /auth/solicitar-restablecimiento:
+ *   post:
+ *     summary: Solicitar restablecimiento de contraseña
+ *     tags: [Usuario]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               correo:
+ *                 type: string
+ *                 description: Correo electrónico del usuario.
+ *     responses:
+ *       200:
+ *         description: Correo de restablecimiento enviado
+ *       404:
+ *         description: Correo no encontrado
+ *       500:
+ *         description: Error del servidor
+ */
+router.post('/solicitar-restablecimiento', authController.solicitarRestablecimientoContrasena);
+
+/**
+ * @swagger
+ * /auth/restablecer-contrasena/{token}:
+ *   post:
+ *     summary: Restablecer la contraseña
+ *     tags: [Usuario]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Token de restablecimiento
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nuevaContrasena:
+ *                 type: string
+ *                 description: Nueva contraseña del usuario.
+ *     responses:
+ *       200:
+ *         description: Contraseña restablecida correctamente
+ *       400:
+ *         description: Token inválido o expirado
+ *       500:
+ *         description: Error del servidor
+ */
+router.post('/restablecer-contrasena/:token', authController.restablecerContrasena);
+
+module.exports = router;
+
+
 module.exports = router;
