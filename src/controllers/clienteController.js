@@ -1,3 +1,4 @@
+const mongoose = require('mongoose'); 
 const Cliente = require('../models/Cliente');
 
 exports.crearCliente = async (req, res) => {
@@ -44,21 +45,28 @@ exports.obtenerClientePorId = async (req, res) => {
 };
 
 exports.actualizarCliente = async (req, res) => {
-  try {
-    const clienteActualizado = await Cliente.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!clienteActualizado) {
-      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    try {
+      // Convertir usuariosAsociados en un array de ObjectId correctamente
+      const usuariosAsociados = req.body.usuariosAsociados.map(
+        (id) => new mongoose.Types.ObjectId(id)
+      );
+  
+      const clienteActualizado = await Cliente.findByIdAndUpdate(
+        req.params.id,
+        { ...req.body, usuariosAsociados }, // Actualiza usuarios asociados con ObjectId
+        { new: true }
+      );
+  
+      if (!clienteActualizado) {
+        return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+      }
+      res.json({ mensaje: 'Cliente actualizado correctamente', cliente: clienteActualizado });
+    } catch (error) {
+      console.error('Error al actualizar el cliente:', error);
+      res.status(500).json({ mensaje: 'Error al actualizar el cliente' });
     }
-    res.json({ mensaje: 'Cliente actualizado correctamente', cliente: clienteActualizado });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al actualizar el cliente' });
-  }
-};
+  };
+  
 
 exports.eliminarCliente = async (req, res) => {
   try {
