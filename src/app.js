@@ -4,6 +4,7 @@ const authRoutes = require('./routes/auth');
 const areaRoutes = require('./routes/areas');
 const rolRoutes = require('./routes/roles');
 const clienteRoutes = require('./routes/cliente'); 
+const propuestaRoutes = require("./routes/propuestas");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors'); 
@@ -147,7 +148,48 @@ const swaggerOptions = {
               description: 'Indica si el cliente es potencial'
             }
           }
-        }
+        },
+        Propuesta: { // Nuevo esquema para Propuestas
+          type: 'object',
+          properties: {
+            cliente: {
+              type: 'string',
+              description: 'ID del cliente asociado',
+            },
+            descripcion: {
+              type: 'string',
+              description: 'Descripción de la propuesta',
+            },
+            monto: {
+              type: 'number',
+              description: 'Monto de la propuesta',
+            },
+            fechaInicio: {
+              type: 'string',
+              format: 'date',
+              description: 'Fecha de inicio de la propuesta',
+            },
+            fechaFin: {
+              type: 'string',
+              format: 'date',
+              description: 'Fecha de finalización de la propuesta',
+            },
+            fechaReunion: {
+              type: 'string',
+              format: 'date',
+              description: 'Fecha de reunión para discutir la propuesta',
+            },
+            urlReunion: {
+              type: 'string',
+              description: 'URL para acceder a la reunión',
+            },
+            estado: {
+              type: 'string',
+              enum: ['Pendiente', 'Aprobada', 'Rechazada'],
+              description: 'Estado actual de la propuesta',
+            },
+          },
+        },
       }
     },
     security: [{ 
@@ -165,6 +207,6 @@ app.use('/auth', authRoutes);
 app.use('/areas', areaRoutes);
 app.use('/roles', rolRoutes);
 app.use('/clientes', clienteRoutes); 
-
+app.use("/propuestas", propuestaRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Servidor iniciado en el puerto ${PORT}`));
