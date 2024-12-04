@@ -2,24 +2,43 @@ const mongoose = require('mongoose');
 const Cliente = require('../models/Cliente');
 
 exports.crearCliente = async (req, res) => {
-  try {
-    const { nombre, rubro, representante, tipoDocumento, numeroDocumento } = req.body;
-
-    const nuevoCliente = new Cliente({
-      nombre,
-      rubro,
-      representante,
-      tipoDocumento,
-      numeroDocumento,
-    });
-
-    await nuevoCliente.save();
-    res.status(201).json({ mensaje: 'Cliente creado correctamente', cliente: nuevoCliente });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al crear el cliente' });
-  }
-};
+    try {
+      const {
+        nombre,
+        rubro,
+        representante,
+        tipoDocumento,
+        numeroDocumento,
+        usuariosAsociados,
+      } = req.body;
+  
+      // Convertir usuariosAsociados en un array de ObjectId
+      const usuariosAsociadosIds = usuariosAsociados.map(
+        (id) => new mongoose.Types.ObjectId(id)
+      );
+  
+      // Crear un nuevo cliente con los datos proporcionados
+      const nuevoCliente = new Cliente({
+        nombre,
+        rubro,
+        representante,
+        tipoDocumento,
+        numeroDocumento,
+        usuariosAsociados: usuariosAsociadosIds, // Asignar los ObjectId convertidos
+      });
+  
+      await nuevoCliente.save();
+  
+      res.status(201).json({
+        mensaje: 'Cliente creado correctamente',
+        cliente: nuevoCliente,
+      });
+    } catch (error) {
+      console.error('Error al crear el cliente:', error);
+      res.status(500).json({ mensaje: 'Error al crear el cliente' });
+    }
+  };
+  
 
 exports.obtenerClientes = async (req, res) => {
   try {
