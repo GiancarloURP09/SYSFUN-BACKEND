@@ -35,8 +35,10 @@ exports.crearPropuesta = async (req, res) => {
 // Obtener todas las propuestas
 exports.obtenerPropuestas = async (req, res) => {
   try {
-    const propuestas = await Propuesta.find().populate("cliente", "nombre rubro representante");
-    res.json(propuestas);
+    const propuestas = await Propuesta.find()
+      .populate("cliente", "nombre") // Asegúrate de que "cliente" es el nombre del campo referenciado
+      .exec();
+    res.status(200).json(propuestas);
   } catch (error) {
     console.error("Error al obtener propuestas:", error);
     res.status(500).json({ mensaje: "Error al obtener propuestas" });
