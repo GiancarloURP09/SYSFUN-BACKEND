@@ -229,3 +229,4 @@ router.post('/:id/asociar-usuario', clienteController.asociarUsuario);
 router.post('/:id/desasociar-usuario', clienteController.desasociarUsuario);
 
 module.exports = router;
+
