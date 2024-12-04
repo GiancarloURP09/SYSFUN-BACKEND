@@ -2,42 +2,44 @@ const mongoose = require('mongoose');
 const Cliente = require('../models/Cliente');
 
 exports.crearCliente = async (req, res) => {
-    try {
-      const {
-        nombre,
-        rubro,
-        representante,
-        tipoDocumento,
-        numeroDocumento,
-        usuariosAsociados,
-      } = req.body;
-  
-      // Convertir usuariosAsociados en un array de ObjectId
-      const usuariosAsociadosIds = usuariosAsociados.map(
-        (id) => new mongoose.Types.ObjectId(id)
-      );
-  
-      // Crear un nuevo cliente con los datos proporcionados
-      const nuevoCliente = new Cliente({
-        nombre,
-        rubro,
-        representante,
-        tipoDocumento,
-        numeroDocumento,
-        usuariosAsociados: usuariosAsociadosIds, // Asignar los ObjectId convertidos
-      });
-  
-      await nuevoCliente.save();
-  
-      res.status(201).json({
-        mensaje: 'Cliente creado correctamente',
-        cliente: nuevoCliente,
-      });
-    } catch (error) {
-      console.error('Error al crear el cliente:', error);
-      res.status(500).json({ mensaje: 'Error al crear el cliente' });
-    }
-  };
+  try {
+    const {
+      nombre,
+      rubro,
+      representante,
+      tipoDocumento,
+      numeroDocumento,
+      usuariosAsociados,
+    } = req.body;
+
+    // Validar y convertir usuariosAsociados a ObjectId
+    const usuariosAsociadosIds = Array.isArray(usuariosAsociados)
+      ? usuariosAsociados
+          .filter((id) => mongoose.Types.ObjectId.isValid(id)) // Filtrar IDs válidos
+          .map((id) => new mongoose.Types.ObjectId(id)) // Convertir a ObjectId
+      : [];
+
+    const nuevoCliente = new Cliente({
+      nombre,
+      rubro,
+      representante,
+      tipoDocumento,
+      numeroDocumento,
+      usuariosAsociados: usuariosAsociadosIds,
+    });
+
+    await nuevoCliente.save();
+
+    res.status(201).json({
+      mensaje: 'Cliente creado correctamente',
+      cliente: nuevoCliente,
+    });
+  } catch (error) {
+    console.error('Error al crear el cliente:', error);
+    res.status(500).json({ mensaje: 'Error al crear el cliente' });
+  }
+};
+
   
 
 exports.obtenerClientes = async (req, res) => {
@@ -64,27 +66,38 @@ exports.obtenerClientePorId = async (req, res) => {
 };
 
 exports.actualizarCliente = async (req, res) => {
-    try {
-      // Convertir usuariosAsociados en un array de ObjectId correctamente
-      const usuariosAsociados = req.body.usuariosAsociados.map(
-        (id) => new mongoose.Types.ObjectId(id)
-      );
-  
-      const clienteActualizado = await Cliente.findByIdAndUpdate(
-        req.params.id,
-        { ...req.body, usuariosAsociados }, // Actualiza usuarios asociados con ObjectId
-        { new: true }
-      );
-  
-      if (!clienteActualizado) {
-        return res.status(404).json({ mensaje: 'Cliente no encontrado' });
-      }
-      res.json({ mensaje: 'Cliente actualizado correctamente', cliente: clienteActualizado });
-    } catch (error) {
-      console.error('Error al actualizar el cliente:', error);
-      res.status(500).json({ mensaje: 'Error al actualizar el cliente' });
+  try {
+    const { id } = req.params;
+    const { usuariosAsociados, ...restoDeDatos } = req.body;
+
+    // Validar y convertir usuariosAsociados a ObjectId
+    const usuariosAsociadosIds = Array.isArray(usuariosAsociados)
+      ? usuariosAsociados
+          .filter((id) => mongoose.Types.ObjectId.isValid(id)) // Filtrar IDs válidos
+          .map((id) => new mongoose.Types.ObjectId(id)) // Convertir a ObjectId
+      : [];
+
+    const clienteActualizado = await Cliente.findByIdAndUpdate(
+      id,
+      { ...restoDeDatos, usuariosAsociados: usuariosAsociadosIds },
+      { new: true },
+    );
+
+    if (!clienteActualizado) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
     }
-  };
+
+    res.json({
+      mensaje: 'Cliente actualizado correctamente',
+      cliente: clienteActualizado,
+    });
+  } catch (error) {
+    console.error('Error al actualizar el cliente:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar el cliente' });
+  }
+};
+
+
   
 
 exports.eliminarCliente = async (req, res) => {
