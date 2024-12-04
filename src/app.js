@@ -3,6 +3,7 @@ const conectarDB = require('./config/database');
 const authRoutes = require('./routes/auth');
 const areaRoutes = require('./routes/areas');
 const rolRoutes = require('./routes/roles');
+const clienteRoutes = require('./routes/cliente'); 
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors'); 
@@ -109,6 +110,43 @@ const swaggerOptions = {
               description: 'ID del área asociada al rol'
             }
           }
+        },
+        Cliente: { // Agregar el esquema Cliente
+          type: 'object',
+          properties: {
+            nombre: {
+              type: 'string',
+              description: 'Nombre del cliente'
+            },
+            rubro: {
+              type: 'string',
+              description: 'Rubro del cliente'
+            },
+            representante: {
+              type: 'string',
+              description: 'Representante del cliente'
+            },
+            tipoDocumento: {
+              type: 'string',
+              enum: ['DNI', 'RUC', 'Pasaporte', 'Carnet de Extranjería'],
+              description: 'Tipo de documento del cliente'
+            },
+            numeroDocumento: {
+              type: 'string',
+              description: 'Número de documento del cliente'
+            },
+            usuariosAsociados: {
+              type: 'array',
+              items: {
+                type: 'string',
+                description: 'ID de los usuarios asociados al cliente'
+              }
+            },
+            esPotencial: {
+              type: 'boolean',
+              description: 'Indica si el cliente es potencial'
+            }
+          }
         }
       }
     },
@@ -126,6 +164,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/auth', authRoutes);
 app.use('/areas', areaRoutes);
 app.use('/roles', rolRoutes);
+app.use('/clientes', clienteRoutes); 
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Servidor iniciado en el puerto ${PORT}`));
