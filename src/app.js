@@ -18,7 +18,7 @@ conectarDB();
 
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:9000', 'http://localhost:4000/api-docs'], 
+  origin: ['http://localhost:9000', 'http://localhost:4000/api-docs','https://sysfun-frontend.onrender.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
 }));
 
