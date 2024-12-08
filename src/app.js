@@ -1,5 +1,6 @@
 const express = require('express');
 const conectarDB = require('./config/database');
+const path = require('path'); // Importar 'path'
 const authRoutes = require('./routes/auth');
 const areaRoutes = require('./routes/areas');
 const rolRoutes = require('./routes/roles');
@@ -223,6 +224,9 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
+// Servir la página estática de bienvenida
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Rutas de la API
