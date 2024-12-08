@@ -5,6 +5,8 @@ const areaRoutes = require('./routes/areas');
 const rolRoutes = require('./routes/roles');
 const clienteRoutes = require('./routes/cliente'); 
 const propuestaRoutes = require("./routes/propuestas");
+const contratos= require("./routes/contratos");
+const proyectoRoutes = require("./routes/proyectos");
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require('cors'); 
@@ -190,6 +192,27 @@ const swaggerOptions = {
             },
           },
         },
+        Contrato: {
+          type: 'object',
+          properties: {
+            cliente: { type: 'string' },
+            proyecto: { type: 'string' },
+            descripcion: { type: 'string' },
+            fechaInicio: { type: 'string', format: 'date' },
+            fechaFin: { type: 'string', format: 'date' },
+            monto: { type: 'number' },
+            estado: { type: 'string', enum: ['Activo', 'Finalizado', 'Cancelado'] },
+          },
+        },
+        ArchivoContrato: {
+          type: 'object',
+          properties: {
+            filename: { type: 'string' },
+            contentType: { type: 'string' },
+            contratoId: { type: 'string' },
+            uploadDate: { type: 'string', format: 'date' },
+          },
+        },
       }
     },
     security: [{ 
@@ -208,5 +231,7 @@ app.use('/areas', areaRoutes);
 app.use('/roles', rolRoutes);
 app.use('/clientes', clienteRoutes); 
 app.use("/propuestas", propuestaRoutes);
+app.use("/contratos", contratos);
+app.use("/proyectos", proyectoRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Servidor iniciado en el puerto ${PORT}`));
